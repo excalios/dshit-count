@@ -1,0 +1,6 @@
+#!/usr/bin/env sh
+
+docker exec -it dshit-count-db-1 \
+  psql \
+  -d 'postgresql://postgres:postgres@127.0.0.1:5432/hit-count-db' \
+  -P expanded=auto

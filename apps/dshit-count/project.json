@@ -24,7 +24,8 @@
       "executor": "@nx/vite:dev-server",
       "defaultConfiguration": "development",
       "options": {
-        "buildTarget": "dshit-count:build"
+        "buildTarget": "dshit-count:build",
+        "proxyConfig": "apps/dshit-count/proxy.conf.json"
       },
       "configurations": {
         "development": {
