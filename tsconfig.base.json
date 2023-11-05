@@ -14,7 +14,13 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
-    "paths": {}
+    "paths": {
+      "@dshit-count/api/database": ["libs/api/database/src/index.ts"],
+      "@dshit-count/api/database/migrations": [
+        "libs/api/database/migrations/src/index.ts"
+      ],
+      "@dshit-count/shared/schema": ["libs/shared/schema/src/index.ts"]
+    }
   },
   "exclude": ["node_modules", "tmp"]
 }
