@@ -4,10 +4,8 @@ case $1 in
   "api")
     docker-compose down -v && \
       docker-compose up -d && \
-      sleep 1
-          #&& \
-      #pnpm migrate latest && \
-      #pnpm migrate seed
+      sleep 1 && \
+      pnpm migrate latest
     ;;
   *)
     echo "Usage: $0 { api }"

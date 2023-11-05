@@ -1,0 +1,24 @@
+#!/usr/bin/env sh
+
+migrate() {
+  nx build api-database-migrations && \
+    env-cmd -f .env node dist/libs/api/database/migrations/src/index.js $1
+}
+
+case $1 in
+  'create')
+    touch libs/api/database/migrations/src/migrations/$(date '+%Y%m%d%H%M%S')_$2.ts
+    ;;
+  'latest')
+    migrate $1
+    ;;
+  'rollback')
+    migrate $1
+    ;;
+  'refresh')
+    migrate rollback && migrate latest
+    ;;
+  *)
+    echo "Usage: $0 { create table_name | latest | rollback | refresh }"
+    ;;
+esac

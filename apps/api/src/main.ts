@@ -1,24 +1,66 @@
-/**
- * This is not a production server yet!
- * This is only a minimal backend to get started.
- */
-
 import express from 'express';
+
+import morgan from 'morgan';
+import helmet from 'helmet';
 import cors from 'cors';
-import * as path from 'path';
+
+import { Kysely, PostgresDialect } from 'kysely';
+import { Pool } from 'pg';
+
+import { Database } from '@dshit-count/api/database';
+
+import process from 'process';
+
+import 'dotenv/config';
 
 const app = express();
 
 app.use(cors());
+app.use(helmet());
+app.use(morgan('dev'));
 
-app.use('/assets', express.static(path.join(__dirname, 'assets')));
+const dbConfig = {
+  pool: new Pool({ connectionString: process.env.DATABASE_URL }),
+};
+const db = new Kysely<Database>({ dialect: new PostgresDialect(dbConfig) });
 
-app.get('/api', (req, res) => {
-  res.json({ message: 'Welcome to api!' });
+app.get('/health', (_, res) => {
+  res.json({
+    message: 'Distributed System Hit Point',
+    time: new Date().getTime(),
+  });
 });
 
-const port = process.env.PORT || 3333;
+/**
+  * POST /api/v1/count
+  * @method POST
+  * @returns HitCountCrud['create']['response'] libs/shared/schema/src/lib/hit-count-crud.schema.ts
+  */
+app.post('/api/v1/count', async (_, res) => {
+  const data = await db.insertInto('hit_count').values({
+    pid: process.pid,
+  }).returningAll().executeTakeFirstOrThrow();
+  res.status(201).json({
+    data
+  });
+})
+
+const port = process.env.PORT || 8080;
 const server = app.listen(port, () => {
   console.log(`Listening at http://localhost:${port}/api`);
 });
 server.on('error', console.error);
+
+process.on('SIGINT', function() {
+  server.close(() => {
+    console.log(`server is closed SIGINT http://localhost:${port}/api`);
+  });
+  db.destroy();
+});
+
+process.on('SIGTERM', function() {
+  server.close(() => {
+    console.log(`server is closed SIGTERM http://localhost:${port}/api`);
+  });
+  db.destroy();
+});
