@@ -15,7 +15,6 @@ export function App() {
     <div className={styles.main}>
       <Button onClick={() => {
         axios.get('http://localhost:8080/hit').then((data) => {
-          // __AUTO_GENERATED_PRINT_VAR_START__
           console.log('App res: ', data); // __AUTO_GENERATED_PRINT_VAR_END__
         });
       }} />
