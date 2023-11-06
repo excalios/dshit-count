@@ -2,7 +2,7 @@
 import styles from './app.module.css';
 import axios from 'axios';
 
-import NxWelcome from './nx-welcome';
+// import NxWelcome from './nx-welcome';
 
 export function App() {
   axios.get('http://localhost:8080/health').then((data) => {
@@ -12,7 +12,7 @@ export function App() {
 
   return (
     <div>
-      <NxWelcome title="dshit-count" />
+      {/* <NxWelcome title="dshit-count" /> */}
     </div>
   );
 }
