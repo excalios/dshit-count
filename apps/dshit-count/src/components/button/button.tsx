@@ -1,17 +1,3 @@
-// import React from 'react'
-// import styles from'./button.module.css'
-
-// const Button = () => {
-//   return (
-//     <div className={styles.container}>
-//         <button className={styles.button}>Hit Counter</button>
-//     </div>
-//   )
-// }
-
-
-// export default Button
-
 import React, { useState } from "react";
 import styles from "./button.module.css";
 
