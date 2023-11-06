@@ -68,7 +68,6 @@
 }
 
 .main{
-  padding: 14px;
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -136,3 +135,73 @@
 .number {
   text-align: left;
 }
+
+.main{
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+}
+
+.main h1{
+  font-weight: 600;
+  color: #399d4e  ;
+}
+
+.row:hover{
+  background-color: rgba(143, 239, 74, 0.1);
+  cursor: pointer;
+}
+
+.row{
+  border-bottom: 2px solid #399d4e;
+}
+
+.row td{
+  padding:12px 8px;
+}
+
+.head th{
+  text-align: left;
+  padding:20px 8px;
+  text-wrap: wrap;
+  background-color:#abdeb6;
+  color: 2a2a2a;
+  font-weight: 600;
+}
+
+.cell {
+  text-wrap: wrap;
+  font-weight: 300;
+
+
+}
+
+.number{
+  text-align: left  ;
+}
+
+.table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+  background-color:white;
+}
+
+.cell {
+  padding: 8px;
+}
+
+.column1 {
+  width: 30px;
+}
+
+.column2{
+  width: 50%;
+  max-width: 50%;
+}
+
+.number {
+  text-align: left;
+}
+
