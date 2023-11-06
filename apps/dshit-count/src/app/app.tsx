@@ -2,6 +2,7 @@
 import styles from './app.module.css';
 import axios from 'axios';
 import Button from '../components/button/button';
+import Tables from '../components/table/Tables';
 
 // import NxWelcome from './nx-welcome';
 
@@ -20,6 +21,7 @@ export function App() {
           console.log('App res: ', data); // __AUTO_GENERATED_PRINT_VAR_END__
         });
       }} />
+      <Tables/>
     </div>
   );
 }
