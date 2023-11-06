@@ -45,6 +45,20 @@ app.post('/api/v1/count', async (_, res) => {
   });
 })
 
+/*
+GET /api/v1/count/all
+@method GET
+*/
+app.get('/api/v1/count/all', async (_, res) => {
+  // Mengambil semua hit count dari database
+  const data = await db.selectFrom('hit_count').selectAll().executeTakeAll();
+
+  // Mengembalikan data hit count
+  res.json({
+    data,
+  });
+});
+
 const port = process.env.PORT || 8080;
 const server = app.listen(port, () => {
   console.log(`Listening at http://localhost:${port}/api`);
