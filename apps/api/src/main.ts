@@ -45,17 +45,24 @@ app.post('/api/v1/count', async (_, res) => {
   });
 })
 
-/*
-GET /api/v1/count/all
-@method GET
+/**
+  *GET /api/v1/count/all
+  * @method GET
+  * @param {number} page
+  * @param {number} perPage
+  * @returns
 */
-app.get('/api/v1/count/all', async (_, res) => {
-  // Mengambil semua hit count dari database
-  const data = await db.selectFrom('hit_count').selectAll().executeTakeAll();
+app.get('/api/v1/count', async (req, res) => {
+  const page = req.query.page || null;
+  const perPage = req.query.perPage || null;
 
-  // Mengembalikan data hit count
+  const data = await db.selectFrom('hit_count').selectAll().paginate(page, perPage).execute();
+
   res.json({
     data,
+    page,
+    perPage,
+    total: await db.selectFrom('hit_count').selectAll().count(),
   });
 });
 
