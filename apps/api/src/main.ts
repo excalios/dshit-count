@@ -4,7 +4,7 @@ import morgan from 'morgan';
 import helmet from 'helmet';
 import cors from 'cors';
 
-import { Kysely, PostgresDialect } from 'kysely';
+import { Kysely, PostgresDialect, sql } from 'kysely';
 import { Pool } from 'pg';
 
 import { Database } from '@dshit-count/api/database';
@@ -32,30 +32,54 @@ app.get('/health', (_, res) => {
 });
 
 /**
-  * POST /api/v1/count
-  * @method POST
-  * @returns HitCountCrud['create']['response'] libs/shared/schema/src/lib/hit-count-crud.schema.ts
-  */
+ * POST /api/v1/count
+ * @method POST
+ * @returns HitCountCrud['create']['response'] libs/shared/schema/src/lib/hit-count-crud.schema.ts
+ */
 app.post('/api/v1/count', async (_, res) => {
-  const data = await db.insertInto('hit_count').values({
-    pid: process.pid,
-  }).returningAll().executeTakeFirstOrThrow();
+  const data = await db
+    .insertInto('hit_count')
+    .values({
+      pid: process.pid,
+    })
+    .returningAll()
+    .executeTakeFirstOrThrow();
   res.status(201).json({
-    data
-  });
-})
-
-/*
-GET /api/v1/count/all
-@method GET
-*/
-app.get('/api/v1/count/all', async (_, res) => {
-  // Mengambil semua hit count dari database
-  const data = await db.selectFrom('hit_count').selectAll().executeTakeAll();
-
-  // Mengembalikan data hit count
-  res.json({
     data,
+  });
+});
+
+/**
+ * GET /api/v1/count
+ * @method GET
+ * @param size {Number} the size of the data
+ * @param page {Number} the page to list
+ *
+ * @returns HitCountCrud['read']['response'] libs/shared/schema/src/lib/hit-count-crud.schema.ts
+ */
+app.get('/api/v1/count', async (req, res) => {
+  const { size, page } = req.query;
+
+  const query = db.selectFrom('hit_count');
+
+  const list = await query
+    .selectAll()
+    .offset((+page - 1) * +size)
+    .limit(+size)
+    .execute();
+  const { count } = await query
+    .select(sql<number>`count(*)`.as('count'))
+    .executeTakeFirstOrThrow();
+
+  res.json({
+    data: {
+      total_count: count,
+      list,
+    },
+    pagination: {
+      rows: count,
+      pages: Math.ceil(count / +size),
+    },
   });
 });
 
@@ -65,14 +89,14 @@ const server = app.listen(port, () => {
 });
 server.on('error', console.error);
 
-process.on('SIGINT', function() {
+process.on('SIGINT', function () {
   server.close(() => {
     console.log(`server is closed SIGINT http://localhost:${port}/api`);
   });
   db.destroy();
 });
 
-process.on('SIGTERM', function() {
+process.on('SIGTERM', function () {
   server.close(() => {
     console.log(`server is closed SIGTERM http://localhost:${port}/api`);
   });
