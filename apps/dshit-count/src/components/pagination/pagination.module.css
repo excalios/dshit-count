@@ -1,0 +1,58 @@
+.main{
+  display: flex;
+  gap: 12px;
+}
+
+.text{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 45px;
+  height: 45px;
+  text-align: center;
+  border: 1px solid #399d4e;
+  border-radius: 4px;
+  
+}
+
+.buttonText{
+  height: 45px;
+  width: max-content;
+  min-width: 80px;
+  border: 2px solid #399d4e;
+  border-radius: 4px;
+  background-color: white;
+  cursor: pointer;
+  transition: 300ms;
+}
+.buttonText:hover{
+  background-color: #abdeb6;
+  
+}
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.page{
+  width:100%;
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+}
+
+.show{
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.select{
+  width: 45px;
+  aspect-ratio: 1/1;
+  border: #abdeb6 2px solid;
+  border-radius: 4px;
+  text-align: center;
+
+}
