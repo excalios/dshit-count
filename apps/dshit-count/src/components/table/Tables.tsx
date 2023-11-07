@@ -1,8 +1,28 @@
 import React from 'react';
-import styles from './table.module.css';
+
 import Pagination from '../pagination/pagination';
 
-const Tables = () => {
+import styles from './table.module.css';
+
+import { HitCount, RecursiveStatic } from '@dshit-count/shared/schema';
+
+interface TablesProps {
+  logs: RecursiveStatic<typeof HitCount[]>;
+  size: number;
+  page: number;
+  setSize: React.Dispatch<React.SetStateAction<number>>;
+  setPage: React.Dispatch<React.SetStateAction<number>>;
+  total_count: number;
+}
+
+const Tables: React.FC<TablesProps> = ({
+  logs,
+  page,
+  setPage,
+  size,
+  setSize,
+  total_count,
+}) => {
   return (
     <main className={styles.main}>
       <h1>Hit Count Logs</h1>
@@ -13,50 +33,40 @@ const Tables = () => {
             <th className={`${styles.column2}`}>Instance</th>
             <th className={`${styles.column3}`}>Date and Time</th>
           </tr>
-          {tablelist.map((table, index) => (
+          {logs.map((log, index) => (
             <tr key={index} className={`${styles.row}`}>
-              <td className={`${styles.cell} ${styles.number}`}>{index + 1}</td>
-              <td className={`${styles.cell}`}>{table.instance}</td>
+              <td className={`${styles.cell} ${styles.number}`}>
+                {size * (page - 1) + index + 1}
+              </td>
+              <td className={`${styles.cell}`}>{log.pid}</td>
               <td className={`${styles.cell}`}>
                 {`${
-                  table.date.getDate() < 10 ? '0' : ''
-                }${table.date.getDate()}/${
-                  table.date.getMonth() + 1
-                }/${table.date.getFullYear()} - ${table.date.toLocaleTimeString(
-                  [],
-                  {
-                    hour: '2-digit',
-                    minute: '2-digit',
-                  }
-                )}`}
+                  new Date(Number(log.created_at)).getDate() < 10 ? '0' : ''
+                }${new Date(Number(log.created_at)).getDate()}/${
+                  new Date(Number(log.created_at)).getMonth() + 1
+                }/${new Date(
+                  Number(log.created_at)
+                ).getFullYear()} - ${new Date(
+                  Number(log.created_at)
+                ).toLocaleTimeString([], {
+                  hour: '2-digit',
+                  minute: '2-digit',
+                })}`}
               </td>
             </tr>
           ))}
         </tbody>
       </table>
-      
-        <Pagination />
+
+      <Pagination
+        page={page}
+        setPage={setPage}
+        size={size}
+        setSize={setSize}
+        total_count={total_count}
+      />
     </main>
   );
 };
 
 export default Tables;
-
-const tablelist = [
-  {
-    instance: 'instance 1',
-    date: new Date(2023, 10, 6, 1, 0, 0),
-  },
-  {
-    instance: 'instance 2',
-    date: new Date(2023, 10, 6, 1, 0, 0),
-  },
-  {
-    instance: 'instance 3',
-    date: new Date(2023, 10, 6, 1, 0, 0),
-  },
-  {
-    instance: 'instance 4',
-    date: new Date(2023, 10, 6, 1, 0, 0),
-  },
-];
