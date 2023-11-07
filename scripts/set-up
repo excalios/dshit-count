@@ -2,8 +2,8 @@
 
 case $1 in
   "api")
-    docker-compose down -v && \
-      docker-compose up -d && \
+    docker compose down -v && \
+      docker compose up -d && \
       sleep 1 && \
       pnpm migrate latest
     ;;

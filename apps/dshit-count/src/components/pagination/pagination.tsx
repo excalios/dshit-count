@@ -1,45 +1,47 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import styles from './pagination.module.css';
 
-const Pagination: React.FC = () => {
-  const [value, setValue] = useState(1);
-  const [show, setShow] = useState(5); // Default number of items to show per page
+interface PaginationProps {
+  page: number;
+  setPage: React.Dispatch<React.SetStateAction<number>>;
+  size: number;
+  setSize: React.Dispatch<React.SetStateAction<number>>;
+  total_count: number;
+}
 
+const Pagination: React.FC<PaginationProps> = ({
+  page,
+  setPage,
+  size,
+  setSize,
+  total_count,
+}) => {
   const handlePrevious = () => {
-    if (value > 1) {
-      setValue(value - 1);
-    }
+    setPage((prev) => prev - 1);
   };
 
   const handleNext = () => {
-    setValue(value + 1);
+    setPage((prev) => prev + 1);
   };
 
-  useEffect(() => {
-    console.log('Value has changed:', value);
-  }, [value]);
-
-  useEffect(() => {
-    console.log('Show has changed:', show);
-  }, [show]);
-
-
-  const handleShowChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedShow = parseInt(e.target.value, 10);
-    setShow(selectedShow);
+  const handlesizeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedSize = parseInt(e.target.value, 10);
+    setSize(selectedSize);
+    setPage(1);
   };
 
   return (
     <div className={styles.page}>
-      <section className={styles.show}>
-        Show Page :
+      <section className={styles.size}>
+        Page Size:
         <select
           className={styles.select}
-          title="Show Page"
+          style={{ marginLeft: '10px' }}
+          title="size Page"
           id="page"
           name="page"
-          value={show}
-          onChange={handleShowChange}
+          value={size}
+          onChange={handlesizeChange}
         >
           <option value="5">5</option>
           <option value="10">10</option>
@@ -47,13 +49,28 @@ const Pagination: React.FC = () => {
         </select>
       </section>
       <main className={styles.main}>
-        <button className={styles.buttonText} onClick={handlePrevious}>
+        <button
+          className={styles.buttonText}
+          onClick={handlePrevious}
+          disabled={page === 1}
+        >
           Previous
         </button>
         <div>
-          <input placeholder='number here'  title='' type="number" value={value} className={styles.text} disabled />
+          <input
+            placeholder="number here"
+            title=""
+            type="number"
+            value={page}
+            className={styles.text}
+            disabled
+          />
         </div>
-        <button className={styles.buttonText} onClick={handleNext}>
+        <button
+          className={styles.buttonText}
+          onClick={handleNext}
+          disabled={page * size >= total_count}
+        >
           Next
         </button>
       </main>
