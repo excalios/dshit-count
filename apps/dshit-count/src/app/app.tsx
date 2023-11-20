@@ -9,7 +9,7 @@ import styles from './app.module.css';
 
 import { HitCount, RecursiveStatic } from '@dshit-count/shared/schema';
 
-const api_url = `http://localhost:9090/api/v1`;
+const api_url = import.meta.env.VITE_API_URL || `http://localhost:8080/api/v1`;
 
 export function App() {
   const [logs, setLogs] = useState<RecursiveStatic<typeof HitCount[]>>([]);

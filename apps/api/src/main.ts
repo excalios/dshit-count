@@ -10,6 +10,7 @@ import { Pool } from 'pg';
 import { Database } from '@dshit-count/api/database';
 
 import process from 'process';
+import os from 'os';
 
 import 'dotenv/config';
 
@@ -40,7 +41,7 @@ app.post('/api/v1/count', async (_, res) => {
   const data = await db
     .insertInto('hit_count')
     .values({
-      pid: process.pid,
+      pid: os.hostname(),
     })
     .returningAll()
     .executeTakeFirstOrThrow();

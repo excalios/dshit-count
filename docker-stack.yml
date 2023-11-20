@@ -1,0 +1,96 @@
+name: dshit-count
+services:
+  backend:
+    build:
+      context: /Users/v01d/dev/college/distributed/dshit-count
+      dockerfile: Dockerfile.api
+    depends_on:
+      db:
+        condition: service_started
+        required: true
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:5432/hit-count-db?schema=public
+      PORT: '8080'
+    labels:
+      traefik.enable: 'true'
+      traefik.http.routers.backend-http.rule: PathPrefix(`/api`) || PathPrefix(`/docs`) || PathPrefix(`/redoc`)
+      traefik.http.services.backend.loadbalancer.server.port: '80'
+    networks:
+      default: null
+    ports:
+      - mode: ingress
+        target: 8080
+        published: '8080'
+        protocol: tcp
+    volumes:
+      - type: bind
+        source: /Users/v01d/dev/college/distributed/dshit-count/backend/app
+        target: /app
+        bind:
+          create_host_path: true
+  db:
+    environment:
+      POSTGRES_DB: hit-count-db
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+    healthcheck:
+      test:
+        - CMD
+        - pg_isready
+        - -U
+        - postgres
+    image: postgres:14-alpine
+    networks:
+      default: null
+    ports:
+      - mode: ingress
+        target: 5432
+        published: '5432'
+        protocol: tcp
+    restart: always
+    volumes:
+      - type: volume
+        source: pgdata
+        target: /var/lib/postgresql/data
+        volume: {}
+  proxy:
+    command:
+      - --providers.docker
+      - --providers.docker.constraints=Label(`traefik.constraint-label`, `traefik-public`)
+      - --providers.docker.exposedbydefault=false
+      - --accesslog
+      - --log
+      - --api
+      - --api.insecure=true
+    image: traefik:v2.10
+    labels:
+      traefik.enable: 'true'
+      traefik.http.routers.traefik-public-http.rule: Host(`localhost`)
+      traefik.http.services.traefik-public.loadbalancer.server.port: '80'
+    networks:
+      default: null
+      traefik-public: null
+    ports:
+      - mode: ingress
+        target: 80
+        published: '80'
+        protocol: tcp
+      - mode: ingress
+        target: 8080
+        published: '8090'
+        protocol: tcp
+    volumes:
+      - type: bind
+        source: /var/run/docker.sock
+        target: /var/run/docker.sock
+        bind:
+          create_host_path: true
+networks:
+  default:
+    name: dshit-count_default
+  traefik-public:
+    name: traefik-public
+    external: true
+volumes:
+  pgdata:
+    name: dshit-count_pgdata
