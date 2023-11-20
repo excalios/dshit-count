@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-docker exec -it my-web_db.1.jgecx92yepqgxsv1g9jjns5do \
+docker exec -it my-web_db.1.tpux9gom3dfqilw3d2qwnt9wp \
   psql \
   -d 'postgresql://postgres:postgres@127.0.0.1:5432/hit-count-db' \
   -P expanded=auto
