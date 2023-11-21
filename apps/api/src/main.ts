@@ -85,7 +85,7 @@ app.get('/api/v1/count', async (req, res) => {
 });
 
 const port = process.env.PORT || 8080;
-const server = app.listen(port, () => {
+const server = app.listen(+port, '0.0.0.0', () => {
   console.log(`Listening at http://localhost:${port}/api`);
 });
 server.on('error', console.error);

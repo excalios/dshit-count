@@ -1,0 +1,23 @@
+version: '3.3'
+
+services:
+  backend:
+    working_dir: /app
+    environment:
+      - PORT=8080
+      - DATABASE_URL=postgresql://postgres:postgres@db/hit-count-db?schema=public
+    networks:
+      - traefik-public
+    image: dshit-api
+    deploy:
+      labels:
+        - traefik.http.routers.backend-http.rule=PathPrefix(`/api`)
+        - traefik.http.routers.backend-http.entrypoints=http
+        - traefik.http.services.backend.loadbalancer.server.port=8080
+        - traefik.enable=true
+        - traefik.docker.network=traefik-public
+        - traefik.constraint-label=traefik-public
+
+networks:
+  traefik-public:
+    external: true

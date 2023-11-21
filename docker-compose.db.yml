@@ -1,0 +1,29 @@
+version: '3.3'
+services:
+  db:
+    image: postgres:14-alpine
+    networks:
+      - traefik-public
+    restart: always
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    #ports:
+    #- '5432:5432'
+    healthcheck:
+      test: ['CMD', 'pg_isready', '-U', 'postgres']
+    environment:
+      - POSTGRES_DB=hit-count-db
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    deploy:
+      labels:
+        - traefik.enable=true
+        - traefik.docker.network=traefik-public
+        - traefik.constraint-label=traefik-public
+        - traefik.http.services.database.loadbalancer.server.port=5432
+
+volumes:
+  pgdata:
+networks:
+  traefik-public:
+    external: true
